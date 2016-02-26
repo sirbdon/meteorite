@@ -14,6 +14,7 @@ Template.postSubmit.events({
 
       // show the post exists and route anyway
       if (result.postExists) alert('The fucking posts exists, asshole!');
+      console.log(result.postExists);
       Router.go('postPage', {_id: result._id});
     });
   }
