@@ -8,8 +8,12 @@ Template.postSubmit.events({
     };
 
     Meteor.call('postInsert', post, function(error, result) {
+
+      // display error to user and abort
       if (error) return alert(error.reason);
 
+      // show the post exists and route anyway
+      if (result.postExists) alert('The fucking posts exists, asshole!');
       Router.go('postPage', {_id: result._id});
     });
   }
