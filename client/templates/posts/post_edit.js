@@ -10,22 +10,22 @@ Template.postEdit.events({
 
     
     // CHECK FOR EXISTING URL ON EDIT
-    var duplicateUrlResult = {};
+    var duplicateUrlResult = false;
 
     Meteor.call('duplicateUrlCheck', postProperties.url, function(error, result) {
       // if error return error to console
       if (error) return console.log(error);
-      duplicateUrlResult = result;
+      console.log("edit URL check called: " + JSON.stringify(result, null, 2));
+      
+      // if post exists alert user and return flag to exit submit form function
+      if (result.postExists) {
+        console.log("url exists: " + result.postExists);
+        Router.go('postPage', {_id: result._id});
+        duplicateUrlResult = result.postExists;
+      }
     })
-
-    // if url is duplicate show post exists and route to existing page
-    // do not update post (remains the same)
-    if (duplicateUrlResult.postExists) {
-      alert('Ya that URL exists already idiot');
-      console.log(result.postExists);
-      Router.go('postPage', {_id: result._id});
-      return;
-    }
+    // exit submit form function before update executes
+    if (duplicateUrlResult) { return alert('Ya that URL exists already idiot'); }
 
     // ELSE, UPDATE POST PROPERTIES
     Posts.update(currentPostId, {$set: postProperties}, function(error) {
